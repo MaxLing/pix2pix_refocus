@@ -20,7 +20,8 @@ class Dataset():
 
     def pairs_generator(self):
         for id in self.image_ids:
-            defocus_image = cv2.imread(self.defocus_dir + id)
-            focus_image = cv2.imread(self.focus_dir + id)
+            # note change BGR to RGB
+            defocus_image = cv2.imread(self.defocus_dir + id)[...,::-1]
+            focus_image = cv2.imread(self.focus_dir + id)[...,::-1]
 
             yield defocus_image, focus_image
