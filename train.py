@@ -8,11 +8,11 @@ from model import Pix2Pix
 data_dir = "./refocus"
 batch_size = 4
 image_size = [512, 512]
-l1_weight = 10
+l1_weight = 100
 gp_weight = 1
 
-learn_rate = 1e-2
-max_iter = 1000
+learn_rate = 1e-3
+max_iter = 10000
 model_dir = './model/'
 if not os.path.exists(model_dir):
     os.mkdir(model_dir)
@@ -118,13 +118,13 @@ with tf.Session(config=config) as sess:
         _ = sess.run(g_op, {defocus: defocus_images, focus: focus_images, is_training: True})
         writer.add_summary(summary, i)
 
-        if (i+1)% 200 == 0:
+        if (j+1) % 100 == 0:
             # visualize
             refocus_images = sess.run(fake_focus, {defocus:defocus_images, is_training: True})
             summary = sess.run(image_summary, {ph_defocus: defocus_images,
                                                ph_focus: focus_images,
                                                ph_refocus: refocus_images})
             writer.add_summary(summary, i)
-
+        if (j+1) % 500 == 0:
             # save the model
             saver.save(sess, os.path.join(model_dir, 'model.ckpt'), global_step=i, write_meta_graph=False)
